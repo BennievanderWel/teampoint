@@ -1,0 +1,19 @@
+@import-normalize;
+
+html,
+body {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  overflow-y: auto; // Bulma fix
+}
+
+#root {
+  height: 100%;
+}
+
+h2 {
+  color: darkgray;
+  font-size: 24px;
+}

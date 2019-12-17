@@ -1,0 +1,80 @@
+.Container {
+  height: 100%;
+  background-color: #f5f5f5;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.LoginBtn {
+  width: 200px !important;
+  height: 200px !important;
+  font-size: 44px !important;
+  margin-bottom: 50px;
+}
+
+.LogoutBtn {
+  margin: 4px 0 0 200px;
+  border: none !important;
+  height: 20px !important;
+  background: none !important;
+  text-decoration: underline;
+}
+
+.Dashboard {
+  width: 500px;
+  height: 500px;
+
+  > div {
+    margin-bottom: 20px;
+  }
+}
+
+.Chat {
+  height: 420px;
+  margin-bottom: 20px;
+  display: flex;
+  flex-direction: column;
+}
+
+.Input {
+}
+
+.Form {
+  display: flex;
+  margin: 0 20px;
+  button {
+    margin-left: 3px;
+  }
+}
+
+.MessageFrom {
+  width: 100%;
+  margin-bottom: 4px;
+  span {
+    background-color: springgreen;
+    border: steelblue solid 1px;
+    border-radius: 0px 10px 10px 10px;
+    padding: 4px;
+    width: fit-content;
+    float: left;
+  }
+}
+
+.MessageTo {
+  width: 100%;
+  margin-bottom: 4px;
+  span {
+    background-color: turquoise;
+    border: steelblue solid 1px;
+    border-radius: 10px 0px 10px 10px;
+    padding: 4px;
+    width: fit-content;
+    float: right;
+  }
+}
+
+.Pictures {
+  margin-top: 100px;
+}
