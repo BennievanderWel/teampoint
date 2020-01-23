@@ -8,18 +8,22 @@ import styles from "./Login.module.scss";
 
 export default function Login({ onLogin, history }) {
   const [loading, setLoading] = useState(false);
+  const [email, setEmail ] = useState('bennievanderwel@gmail.com')
+  const [password, setPassword] = useState('pass')
 
   function handleLogin() {
     setLoading(true);
-    onLogin().catch(() => setLoading(false));
+    onLogin(email, password);
   }
 
   return (
     <div className={styles.Container}>
       <h1>TeamPoint</h1>
       <Panel width="m" className={styles.LoginPanel}>
-        <Input disabled={loading} fullWidth placeholder="E-mail" type="email" />
+        <Input onChange={e => setEmail(e.target.value)} value={email} disabled={loading} fullWidth placeholder="E-mail" type="email" />
         <Input
+        onChange={e => setPassword(e.target.value)}
+        value={password}
           disabled={loading}
           fullWidth
           placeholder="Wachtwoord"

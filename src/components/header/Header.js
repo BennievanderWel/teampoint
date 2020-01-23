@@ -1,9 +1,8 @@
 import React from "react";
 
-import { Link } from "react-router-dom";
-
 import styles from "./Header.module.scss";
 import Button from "../../ui/button/Button";
+import Icon from "../../ui/icon/Icon";
 
 export default function Header({ logout, currentUser }) {
   return (
@@ -12,7 +11,7 @@ export default function Header({ logout, currentUser }) {
         <li>
           <h1>TeamPoint</h1>
         </li>
-        <li>
+        {/* <li>
           <Button outlined>
             <Link to="/">dashboad</Link>
           </Button>
@@ -21,10 +20,10 @@ export default function Header({ logout, currentUser }) {
           <Button outlined>
             <Link to="profile">profile</Link>
           </Button>
-        </li>
+        </li> */}
         <li>
           <span>{currentUser.name}</span>
-          <Button onClick={logout}>logout</Button>
+          <Button onClick={logout} outlined inverted primary><Icon icon='logout'/></Button>
         </li>
       </ul>
     </div>

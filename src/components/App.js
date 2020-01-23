@@ -1,9 +1,10 @@
 import React from "react";
 import Backendless from "backendless";
+import { BrowserRouter, Switch, Route } from 'react-router-dom';
 
-import Button from "../ui/button/Button";
-import Input from "../ui/input/Input";
-import Panel from "../ui/panel/Panel";
+import Login from "./login/Login";
+import Dashboard from './dashboard/Dashboard'
+import Header from './header/Header'
 
 import styles from "./App.module.scss";
 import "bulma/bulma.sass";
@@ -12,143 +13,64 @@ class App extends React.Component {
   state = {
     authenticated: false,
     currentUser: null,
-    messages: [],
-    message: ""
   };
 
   constructor() {
     super();
+
+    // TODO: Move to config file
     Backendless.initApp(
-      "6210F59C-7E01-5C03-FFB0-E54E129DC300",
-      "FAD4019F-AB75-403B-86F8-F981DF388724"
+      "CC78D110-B842-C36D-FFB9-DB5E5BA42F00",
+      "3AEAC9E2-9FE1-43CB-927B-C1AEEEA34E38"
     );
   }
 
   componentDidMount() {
+    // Check for a logged in user
     Backendless.UserService.getCurrentUser().then(user => {
       if (user) {
         this.setState({ currentUser: user, authenticated: true });
-        this.getMessages();
       }
-    });
+    }).catch(console.log);
   }
 
-  login(email) {
-    Backendless.UserService.login(email, "test", true)
+  // Log the user in
+  login(email, password) {
+    return Backendless.UserService.login(email, password, true)
       .then(user => {
-        this.getMessages();
         this.setState({ currentUser: user, authenticated: true });
       })
       .catch(console.log);
   }
 
+  // Log the user out
   logout() {
     Backendless.UserService.logout()
       .then(() =>
-        this.setState({ authenticated: false, currentUser: null, messages: [] })
+        this.setState({ authenticated: false, currentUser: null })
       )
       .catch(console.log);
   }
 
-  getMessages() {
-    const messagesTableRT = Backendless.Data.of("Messages").rt();
-
-    const onObjectCreate = message =>
-      this.setState(prevState => ({
-        messages: [...prevState.messages, message]
-      }));
-    const onError = error => console.log("An error has occurred -", error);
-
-    messagesTableRT.addCreateListener(onObjectCreate, onError);
-
-    const queryBuilder = Backendless.DataQueryBuilder.create();
-    queryBuilder.setSortBy(["created ASC"]);
-    Backendless.Data.of("Messages")
-      .find(queryBuilder)
-      .then(messages => {
-        this.setState({ messages });
-      });
-  }
-
-  submitMessage(e) {
-    e.preventDefault();
-
-    const { message, currentUser } = this.state;
-    Backendless.Data.of("Messages")
-      .save({
-        content: message,
-        from: currentUser.objectId
-      })
-      .then(() => {
-        this.setState({ message: "" });
-      })
-      .catch(console.log);
-  }
-
   render() {
-    const { authenticated, currentUser, messages, message } = this.state;
-
+    const { authenticated, currentUser } = this.state;
+    
     return (
       <div className={styles.Container}>
-        <h1>TapConnect</h1>
         {!authenticated && (
-          <>
-            <Button
-              primary
-              className={styles.LoginBtn}
-              onClick={() => this.login("rens@test.com")}
-            >
-              Rens
-            </Button>
-            <Button
-              primary
-              className={styles.LoginBtn}
-              onClick={() => this.login("marja@test.com")}
-            >
-              Marja
-            </Button>
-          </>
+          <Login onLogin={this.login.bind(this)}/>
         )}
-        {currentUser && (
-          <div className={styles.Dashboard}>
-            <Panel>
-              <div className={styles.Chat}>
-                {messages.map(m => (
-                  <div
-                    key={m.objectId}
-                    className={
-                      m.ownerId === currentUser.objectId
-                        ? styles.MessageFrom
-                        : styles.MessageTo
-                    }
-                  >
-                    <span>{m.content}</span>
-                  </div>
-                ))}
-              </div>
-            </Panel>
-            <form className={styles.Form} onSubmit={e => this.submitMessage(e)}>
-              <Input
-                className={styles.Input}
-                fullWidth
-                placeholder="Typ hier je bericht.."
-                value={message}
-                onChange={e => this.setState({ message: e.target.value })}
-              />
-              <Button type="submit">Stuur</Button>
-            </form>
-            <Button className={styles.LogoutBtn} onClick={() => this.logout()}>
-              Logout
-            </Button>
-          </div>
+        {authenticated && (
+          <BrowserRouter>
+          <Header logout={this.logout.bind(this)} currentUser={currentUser}/>
+          <Switch>
+
+          <Route exact path='/' component={Dashboard}/>
+          </Switch>
+          </BrowserRouter>
         )}
-        {/* {authenticated && currentUser.email === "rens@test.com" && (
-          <div className={styles.Pictures}>
-            <Panel>hoi</Panel>
-          </div>
-        )} */}
       </div>
-    );
+        );
   }
 }
 

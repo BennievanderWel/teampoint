@@ -24,6 +24,8 @@ class Dashboard extends React.Component {
       .catch(console.log);
   }
 
+  
+
   createTeam = () => {
     const { newTeamName, teams } = this.state;
     Backendless.Data.of("Team")
@@ -74,7 +76,13 @@ class Dashboard extends React.Component {
     return (
       <div className={styles.Container}>
         <h1>Dashboard</h1>
-        <Panel>
+
+<Panel>
+  <h2>Inbox</h2>
+</Panel>
+
+
+        {/* <Panel>
           <h2>Company</h2>
           {company && (
             <ul>
@@ -132,7 +140,7 @@ class Dashboard extends React.Component {
               <Button onClick={this.createPosition.bind(this)}>Create</Button>
             </>
           )}
-        </Panel>
+        </Panel> */}
       </div>
     );
   }
