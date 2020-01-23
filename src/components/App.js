@@ -40,7 +40,6 @@ class App extends React.Component {
       .then(user => {
         this.setState({ currentUser: user, authenticated: true });
       })
-      .catch(console.log);
   }
 
   // Log the user out
