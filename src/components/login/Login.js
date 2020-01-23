@@ -8,8 +8,8 @@ import styles from "./Login.module.scss";
 
 export default function Login({ onLogin, history }) {
   const [loading, setLoading] = useState(false);
-  const [email, setEmail ] = useState('bennievanderwel@gmail.com')
-  const [password, setPassword] = useState('pass')
+  const [email, setEmail ] = useState('')
+  const [password, setPassword] = useState('')
 
   function handleLogin() {
     setLoading(true);
