@@ -1,40 +1,53 @@
-import React from "react";
-import Backendless from "backendless";
-import styles from "./Dashboard.module.scss";
-import Panel from "../../ui/panel/Panel";
-import Input from "../../ui/input/Input";
-import Button from "../../ui/button/Button";
+import React from 'react';
+import Backendless from 'backendless';
+
+import AppContext from '../App.context';
+import Panel from '../../ui/panel/Panel';
+
+import styles from './Dashboard.module.scss';
 
 class Dashboard extends React.Component {
   state = {
-    company: null,
-    newTeamName: "",
-    teams: [],
-    selectedTeam: null
+    colleagues: [],
+    isGettingColleagues: true
   };
 
+  static contextType = AppContext;
+
   componentDidMount() {
-    Backendless.Data.of("Company")
-      .findFirst()
-      .then(company => this.setState({ company }))
-      .catch(console.log);
-    Backendless.Data.of("Team")
-      .find()
-      .then(teams => this.setState({ teams }))
-      .catch(console.log);
+    const currentUser = this.context.currentUser;
+
+    this.getColleagues(currentUser);
   }
 
-  
+  // Check if component is done getting the required data
+  isLoading = () => {
+    const { isGettingColleagues } = this.state;
+
+    return isGettingColleagues;
+  };
+
+  getColleagues = currentUser => {
+    const whereClause = `objectId != '${currentUser.objectId}'`;
+    const q = Backendless.DataQueryBuilder.create().setWhereClause(whereClause);
+
+    Backendless.Data.of('Users')
+      .find(q)
+      .then(users => {
+        this.setState({ colleagues: users, isGettingColleagues: false });
+      })
+      .catch(console.log);
+  };
 
   createTeam = () => {
     const { newTeamName, teams } = this.state;
-    Backendless.Data.of("Team")
+    Backendless.Data.of('Team')
       .save({ name: newTeamName })
       .then(newTeam => {
-        Backendless.Data.of("Team")
+        Backendless.Data.of('Team')
           .findFirst({ objectId: newTeam.objectId })
           .then(team => {
-            this.setState({ teams: [...teams, team], newTeamName: "" });
+            this.setState({ teams: [...teams, team], newTeamName: '' });
           });
       })
       .catch(console.log);
@@ -42,7 +55,7 @@ class Dashboard extends React.Component {
 
   createPosition = () => {
     const { newPositionName, selectedTeam } = this.state;
-    Backendless.Data.of("Position")
+    Backendless.Data.of('Position')
       .save({ name: newPositionName, team: selectedTeam.objectId })
       .then(newPosition => {
         this.setState({
@@ -50,7 +63,7 @@ class Dashboard extends React.Component {
             ...selectedTeam,
             positions: [...selectedTeam.positions, newPosition]
           },
-          newPositionName: ""
+          newPositionName: ''
         });
       })
       .catch(console.log);
@@ -64,83 +77,42 @@ class Dashboard extends React.Component {
     this.setState({ newPositionName: e.target.value });
   };
 
-  render() {
-    const {
-      teams,
-      company,
-      newTeamName,
-      selectedTeam,
-      newPositionName
-    } = this.state;
+  renderContent = () => {
+    const { colleagues } = this.state;
 
     return (
-      <div className={styles.Container}>
+      <>
         <h1>Dashboard</h1>
-
-<Panel>
-  <h2>Inbox</h2>
-</Panel>
-
-
-        {/* <Panel>
-          <h2>Company</h2>
-          {company && (
-            <ul>
-              <li>name: {company.name}</li>
-              <li>CEO: {company.ceo.name}</li>
-            </ul>
-          )}
-        </Panel>
-        <Panel>
-          <h2>Teams</h2>
-          <ul>
-            {teams.length === 0
-              ? "No teams yet"
-              : teams.map(t => (
-                  <li key={t.objectId}>
-                    <Button onClick={() => this.setState({ selectedTeam: t })}>
-                      {t.name}
-                    </Button>
-                  </li>
-                ))}
-          </ul>
-          <h2>Add new team</h2>
-          Team name:{" "}
-          <Input
-            value={newTeamName}
-            onChange={this.handleTeamNameChange.bind(this)}
-          />
-          <Button onClick={this.createTeam.bind(this)}>Create</Button>
-        </Panel>
-        <Panel>
-          <h2>Team</h2>
-          {!selectedTeam ? (
-            "No team selected"
-          ) : (
-            <>
+        <div className={styles.Content}>
+          <div className={styles.ContentLeft}>
+            <Panel>
+              <h2>Teams</h2>
+              Je zit niet in een team
+            </Panel>
+            <Panel>
+              <h2>Collega's</h2>
               <ul>
-                <li>{selectedTeam.name}</li>
+                {colleagues.map(c => (
+                  <li key={c.objectId}>{c.name}</li>
+                ))}
               </ul>
-              <h2>Team positions</h2>
-              {selectedTeam.positions.length === 0 ? (
-                "This team has no positions yet"
-              ) : (
-                <ul>
-                  {selectedTeam.positions.map(p => (
-                    <li key={p.objectId}>{p.name}</li>
-                  ))}
-                </ul>
-              )}
-              <h2>Add new position</h2>
-              Position name:{" "}
-              <Input
-                value={newPositionName}
-                onChange={this.handlePositionNameChange.bind(this)}
-              />
-              <Button onClick={this.createPosition.bind(this)}>Create</Button>
-            </>
-          )}
-        </Panel> */}
+            </Panel>
+          </div>
+          <div className={styles.ContentRight}>
+            <Panel className={styles.InboxPanel}>
+              <h2>Inbox</h2>
+              <p>Geen nieuwe berichten</p>
+            </Panel>
+          </div>
+        </div>
+      </>
+    );
+  };
+
+  render() {
+    return (
+      <div className={styles.Container}>
+        {this.isLoading() ? 'loading' : this.renderContent()}
       </div>
     );
   }

@@ -2,12 +2,42 @@
   height: calc(100% - 70px);
   width: 100%;
   padding: 24px;
-
+  
   > h1 {
     margin-top: 0;
   }
-
+  
   > div {
     margin-top: 24px;
+  }
+}
+
+.Content {
+  display: flex;
+}
+
+.ContentLeft {
+  width: 50%;
+  padding-right: 10px;
+
+  > div {
+    min-height: 200px;
+  }
+
+  > div:not(:first-of-type) {
+    margin-top: 20px;
+  }
+}
+
+.ContentRight {
+  width: 50%;
+  padding-left: 10px;
+}
+
+.InboxPanel {
+  height: 300px;
+
+  > p {
+    font-style: italic;
   }
 }
