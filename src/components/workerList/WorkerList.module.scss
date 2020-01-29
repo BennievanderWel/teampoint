@@ -1,0 +1,44 @@
+.Container {
+  table {
+    display: block;
+    tbody {
+      display: table;
+      width: 100%;
+
+      tr {
+        border-top: 0.5px solid #e2e2e2;
+        width: 100%;
+
+        &:first-of-type {
+          border-top: none;
+        }
+
+        &:hover {
+          cursor: pointer;
+          background-color: lightgray;
+        }
+
+        td {
+          padding-top: 2px;
+          padding-bottom: 2px;
+
+          &:first-of-type {
+            padding-left: 8px;
+          }
+
+          &:last-of-type {
+            padding-right: 8px;
+          }
+        }
+      }
+    }
+  }
+}
+
+.Panel {
+  min-height: 300px;
+}
+
+.SelectedRow {
+  background-color: #e2e2e2;
+}
