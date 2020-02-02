@@ -12,6 +12,7 @@ import AppContext from './App.context';
 import { getCurrentUser, login, logout, getUsers } from '../api/user';
 import TeamDetail from './teamDetail/TeamDetail';
 import { getTeams } from '../api/team';
+import Loader from '../ui/loader/Loader';
 
 class App extends React.Component {
   state = {
@@ -89,6 +90,7 @@ class App extends React.Component {
     return (
       <div className={styles.Container}>
         {!authenticated && <Login onLogin={this.login.bind(this)} />}
+        {authenticated && loading && <Loader />}
         {authenticated && !loading && (
           <AppContext.Provider
             value={{
