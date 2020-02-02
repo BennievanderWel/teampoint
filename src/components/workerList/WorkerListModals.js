@@ -1,14 +1,12 @@
-import React, { useState, useContext } from 'react';
+import React, { useState } from 'react';
 import Modal from '../../ui/modal/Modal';
 import Backendless from 'backendless';
-import AppContext from '../App.context';
+import { createUser } from '../../api/user';
 
 export function CreateWorkerModal({ isVisible, close, addWorker }) {
   const [newWorkerName, setNewWorkerName] = useState('');
   const [newWorkerEmail, setNewWorkerEmail] = useState('');
   const [isSubmiting, setIsSubmitting] = useState(false);
-
-  const currentUser = useContext(AppContext).currentUser;
 
   function onClose() {
     close();
@@ -19,21 +17,17 @@ export function CreateWorkerModal({ isVisible, close, addWorker }) {
   function createWorker() {
     setIsSubmitting(true);
 
-    const newUser = new Backendless.User();
-    newUser.name = newWorkerName;
-    newUser.email = newWorkerEmail;
-    newUser.password = 'pass';
+    const newUser = {
+      name: newWorkerName,
+      email: newWorkerEmail,
+      password: 'pass'
+    };
 
-    Backendless.UserService.register(newUser)
+    createUser(newUser)
       .then(user => {
-        Backendless.Data.of('Users')
-          .setRelation(user, 'company', [currentUser.company])
-          .then(() => {
-            addWorker(user);
-            onClose();
-            setIsSubmitting(false);
-          })
-          .catch(console.log);
+        addWorker(user);
+        onClose();
+        setIsSubmitting(false);
       })
       .catch(console.log);
   }
@@ -43,7 +37,7 @@ export function CreateWorkerModal({ isVisible, close, addWorker }) {
       show={isVisible}
       onClose={onClose}
       successBtnText="Maak aan"
-      title="Maak nieuwe gebruiker aan"
+      title="Nieuwe gebruiker aanmaken"
       onSuccess={createWorker}
       isSubmitting={isSubmiting}
     >
@@ -124,7 +118,7 @@ export function DeleteWorkerModal({ isVisible, close, worker, removeWorker }) {
       show={isVisible}
       onClose={onClose}
       successBtnText="Verwijder"
-      title="Verwijder gebruiker"
+      title="Gebruiker verwijderen"
       onSuccess={deleteWorker}
       isSubmitting={isSubmiting}
     >

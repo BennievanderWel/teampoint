@@ -3,6 +3,7 @@ import Panel from '../../ui/panel/Panel';
 
 import styles from './Dashboard.module.scss';
 import WorkerList from '../workerList/WorkerList';
+import TeamList from '../teamList/TeamList';
 
 class Dashboard extends React.Component {
   render() {
@@ -11,10 +12,7 @@ class Dashboard extends React.Component {
         <h1>Dashboard</h1>
         <div className={styles.Content}>
           <div className={styles.ContentLeft}>
-            <Panel>
-              <h2>Teams</h2>
-              Je zit niet in een team
-            </Panel>
+            <TeamList />
             <WorkerList />
           </div>
           <div className={styles.ContentRight}>

@@ -1,5 +1,4 @@
-import React, { useState, useContext, useEffect } from 'react';
-import Backendless from 'backendless';
+import React, { useState, useEffect, useContext } from 'react';
 import { CreateWorkerModal, DeleteWorkerModal } from './WorkerListModals';
 
 import Panel from '../../ui/panel/Panel';
@@ -7,10 +6,9 @@ import ButtonBar from '../../ui/buttonBar/ButtonBar';
 import Button from '../../ui/button/Button';
 import Icon from '../../ui/icon/Icon';
 
-import AppContext from '../App.context';
-
 import styles from './WorkerList.module.scss';
 import Loader from '../../ui/loader/Loader';
+import AppContext from '../App.context';
 
 function WorkerList() {
   const [isCreateWorkerModalVisible, setIsCreateWorkerModalVisible] = useState(
@@ -19,11 +17,11 @@ function WorkerList() {
   const [isDeleteWorkerModalVisible, setIsDeleteWorkerModalVisible] = useState(
     false
   );
-  const [workers, setWorkers] = useState([]);
+
   const [selectedWorker, setSelectedWorker] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
 
-  const currentUser = useContext(AppContext).currentUser;
+  const { workers, setWorkers } = useContext(AppContext);
 
   // useEffect(() => {
   //   const userEventHandler = Backendless.Data.of('Users').rt();
@@ -49,24 +47,10 @@ function WorkerList() {
   // });
 
   useEffect(() => {
-    function getWorkers() {
-      const q = Backendless.DataQueryBuilder.create();
-      q.setWhereClause(
-        `objectId != '${currentUser.objectId}' and company = '${currentUser.company.objectId}'`
-      );
-      q.setPageSize(100);
-
-      Backendless.Data.of('Users')
-        .find(q)
-        .then(workers => {
-          setWorkers(workers);
-          setIsLoading(false);
-        })
-        .catch(console.log);
+    if (workers != null) {
+      setIsLoading(false);
     }
-
-    getWorkers();
-  }, [currentUser]);
+  }, [workers]);
 
   function addWorker(worker) {
     let userIndex;
@@ -92,7 +76,7 @@ function WorkerList() {
     setWorkers(updatedWorkers);
   }
 
-  function closeAddModal() {
+  function closeCreateModal() {
     setIsCreateWorkerModalVisible(false);
   }
 
@@ -104,7 +88,7 @@ function WorkerList() {
     <div className={styles.Container}>
       <CreateWorkerModal
         isVisible={isCreateWorkerModalVisible}
-        close={closeAddModal}
+        close={closeCreateModal}
         addWorker={addWorker}
       />
       <DeleteWorkerModal
@@ -126,7 +110,7 @@ function WorkerList() {
                   setIsCreateWorkerModalVisible(!isCreateWorkerModalVisible)
                 }
               >
-                <Icon icon="addUser" />
+                <Icon icon="add" />
               </Button>
               <Button
                 disabled={!selectedWorker}

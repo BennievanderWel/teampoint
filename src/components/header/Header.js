@@ -1,15 +1,18 @@
-import React from "react";
+import React from 'react';
 
-import styles from "./Header.module.scss";
-import Button from "../../ui/button/Button";
-import Icon from "../../ui/icon/Icon";
+import styles from './Header.module.scss';
+import Button from '../../ui/button/Button';
+import Icon from '../../ui/icon/Icon';
+import { Link } from 'react-router-dom';
 
 export default function Header({ logout, currentUser }) {
   return (
     <div className={styles.Container}>
       <ul className={styles.Menu}>
         <li>
-          <h1>TeamPoint</h1>
+          <Link to="/">
+            <h1>TeamPoint</h1>
+          </Link>
         </li>
         {/* <li>
           <Button outlined>
@@ -23,7 +26,9 @@ export default function Header({ logout, currentUser }) {
         </li> */}
         <li>
           <span>{currentUser.name}</span>
-          <Button onClick={logout} outlined inverted primary><Icon icon='logout'/></Button>
+          <Button onClick={logout} outlined inverted primary>
+            <Icon icon="logout" />
+          </Button>
         </li>
       </ul>
     </div>

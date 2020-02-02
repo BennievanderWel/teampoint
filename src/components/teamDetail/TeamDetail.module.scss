@@ -1,0 +1,27 @@
+.Container {
+  height: calc(100% - 70px);
+  width: 100%;
+  padding: 24px;
+
+  > h1 {
+    margin-top: 0;
+  }
+
+  > div {
+    margin-top: 24px;
+  }
+}
+
+.AddWorker {
+  border: 2px dashed grey;
+  width: 200px;
+  height: 200px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  &:hover {
+    border-color: black;
+    cursor: pointer;
+  }
+}
